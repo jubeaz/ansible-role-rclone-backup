@@ -164,20 +164,16 @@ enc_directory() {
   local l_dir=$1
   local l_enc_params="-base64 -k $entry_password -pbkdf2 -aes-256-cbc -salt"
 
-    echo "$__datetime  Create local file: $entry_title with entry_password" >> $__logfile
-    tar czf - $l_dir | ${__enc_cmd} ${l_enc_params} -out ${local_dir}/${entry_title}
+  echo "$__datetime  Create local file: $entry_title with entry_password" >> $__logfile
+  tar czf - $l_dir | ${__enc_cmd} ${l_enc_params} -out ${local_dir}/${entry_title}
 }
 
 enc_file() {
   local l_file=$1
   local l_enc_params="-base64 -k $entry_password -pbkdf2 -aes-256-cbc -salt"
 
-#  if [[ ! -f ${local_dir}/${entry_title} ]] ; then
-    echo "$__datetime  Create local file: $entry_title with entry_password" >> $__logfile
-    ${__enc_cmd} ${l_enc_params} -in $l_file -out ${local_dir}/${entry_title}
-#  else
-#    echo "$__datetime  local file already exist: $entry_title"
-#  fi
+  echo "$__datetime  Create local file: $entry_title with entry_password" >> $__logfile
+  ${__enc_cmd} ${l_enc_params} -in $l_file -out ${local_dir}/${entry_title}
 }
 
 cloud_backup() {
@@ -264,7 +260,6 @@ main() {
   clean_up
   cp $keepass_db ${local_dir}
   cloud_sync
-  #keepassxc-cli export -f csv $__keepass_std_arg
 }
 
 backup_dirs=()
