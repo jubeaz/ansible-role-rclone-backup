@@ -4,6 +4,6 @@ rclone_backups:
     group: root
     key_path: /root/.ssh/rclone-backup
     db_path: /root/.rclone_backup.kdbx
-    local_dir:
+    local_dir: /tmp
     cloud:
     paths:

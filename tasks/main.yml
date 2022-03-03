@@ -26,7 +26,7 @@
 
 - name: Install backup script
   copy:
-    src: templates/rclone-backup.sh.j2
+    src: rclone-backup.sh
     dest: /usr/bin/rclone-backup.sh
     owner: root
     group: root
@@ -34,17 +34,18 @@
 
 - name: Install retore script
   copy:
-    src: templates/rclone-restore.sh.j2
+    src: rclone-restore.sh
     dest: /usr/bin/rclone-restore.sh
     owner: root
     group: root
     mode: 0755
 
-#- name: Install script
-#  template:
-#    src: rclone-backup.sh.j2
-#    dest: /usr/bin/rclone-backup.sh
-#    owner: root
-#    group: root
-#    mode: 0755
+- name: Install cron
+  template:
+    src: rclone-backup.cron.j2
+    dest: "/etc/cron.d/rclone-backup.{{ item.login }}.cron"
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ rclone_backups }}"
 
