@@ -1,0 +1,50 @@
+---
+- include_tasks: variables.yml
+- include_tasks: asserts.yml
+
+- include_tasks: ubuntu.yml
+  when: ansible_distribution == "Ubuntu"
+- include_tasks: arch.yml
+  when: ansible_distribution == "Archlinux"
+
+- name: Generate ssh key for rclone keepass
+  openssh_keypair:
+    path: "{{ item.key_path }}"
+    owner: "{{ item.login }}"
+    group: "{{ item.group }}"
+    mode: 0600
+  loop: "{{ rclone_backups }}"
+
+- name: Create local_dirs
+  file:
+    state: directory
+    path: "{{ item.local_dir }}"
+    owner: "{{ item.login }}"
+    group: "{{ item.group }}"
+    mode: 0700
+  loop: "{{ rclone_backups }}"
+
+- name: Install backup script
+  copy:
+    src: templates/rclone-backup.sh.j2
+    dest: /usr/bin/rclone-backup.sh
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Install retore script
+  copy:
+    src: templates/rclone-restore.sh.j2
+    dest: /usr/bin/rclone-restore.sh
+    owner: root
+    group: root
+    mode: 0755
+
+#- name: Install script
+#  template:
+#    src: rclone-backup.sh.j2
+#    dest: /usr/bin/rclone-backup.sh
+#    owner: root
+#    group: root
+#    mode: 0755
+

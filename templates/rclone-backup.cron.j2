@@ -1,0 +1,5 @@
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+55 23 * * 1-6 {{ item.login }} /usr/bin/rclone-backup.sh -d {{ item.db_path }} -k {{ item.key_path }} -l {{ item.local_dir }} -c {{ item.cloud }} --- {{ iitem.crom_paths | join(' ') }}
+

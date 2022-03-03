@@ -1,0 +1,15 @@
+galaxy_info:
+  role_name: XXXXX
+  author: jubeaz
+  description: XXXXX
+  license: GPL-2.0-or-later
+  min_ansible_version: 2.1
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+    - name: Archlinux
+      versions:
+        - all
+  galaxy_tags: []
+dependencies: []
