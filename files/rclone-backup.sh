@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+/#!/usr/bin/env bash
 
 set -o errexit
 set -o nounset
@@ -69,23 +69,37 @@ create_keepass_db() {
   # create empty password db
   if [[ ! -f $keepass_db ]] ; then
     echo "$__datetime  keepass create new database $keepass_db" >> $__logfile
-    keepassxc-cli db-create --set-key-file $keepass_key $keepass_db
+    /usr/bin//usr/bin/keepassxc-cli db-create --set-key-file $keepass_key $keepass_db
   fi
 }
 
+
+delete_empty_dirs() {
+  /usr/bin//usr/bin/keepassxc-cli rmdir $__keepass_std_arg "Recycle Bin" >> $__logfile
+  dirs=$(/usr/bin//usr/bin/keepassxc-cli ls $__keepass_std_arg)
+  echo $dirs
+  for dir in $dirs ; do
+      content=$(/usr/bin//usr/bin/keepassxc-cli ls $__keepass_std_arg $dir)
+      if [[ $content ==  '[empty]' ]] ; then
+         /usr/bin//usr/bin/keepassxc-cli rmdir $__keepass_std_arg $dir >> $__logfile
+      fi
+  done
+}
+
+
 create_keepass_group() {
-  local groups=$(keepassxc-cli ls $__keepass_std_arg)
+  local groups=$(/usr/bin//usr/bin/keepassxc-cli ls $__keepass_std_arg)
 
   for group in $groups ; do
     if [[ $group == "$__keepass_group/" ]] ; then
       return
     fi
   done
-  keepassxc-cli mkdir $__keepass_std_arg /$__keepass_group
+  /usr/bin//usr/bin/keepassxc-cli mkdir $__keepass_std_arg /$__keepass_group
 }
 
 fetch_keepass_entry () {
-  local keepass_cmd="keepassxc-cli show --show-protected $__keepass_std_arg $entry_path"
+  local keepass_cmd="/usr/bin//usr/bin/keepassxc-cli show --show-protected $__keepass_std_arg $entry_path"
 
   entry_password=$($keepass_cmd | grep Password | sed 's/Password: //')
   entry_title=$($keepass_cmd | grep Title | sed 's/Title: //')
@@ -101,7 +115,7 @@ find_keepass_entry_from_url() {
   entry_group=""
 
   echo "$__datetime  keepass search entry for $url" >> $__logfile
-  local result=$(keepassxc-cli export -f csv $__keepass_std_arg | grep -v Recycle | grep $url | awk -F',' '{print $1 $2}' | sed 's/""/\//' | sed 's/"//g' | sed 's/Passwords\///')
+  local result=$(/usr/bin//usr/bin/keepassxc-cli export -f csv $__keepass_std_arg | grep -v Recycle | grep $url | awk -F',' '{print $1 $2}' | sed 's/""/\//' | sed 's/"//g' | sed 's/Passwords\///')
   if [[ ! -z $result ]] ; then
     # get existing entry info
     echo "$__datetime  keepass entry found for $url: $result" >> $__logfile
@@ -118,9 +132,9 @@ create_keepass_entry() {
 
   if [[ -z $entry_path ]] ; then
     echo "$__datetime  keepass entry not found for $url creating one" >> $__logfile
-    entry_title="$(keepassxc-cli generate --length 16 --lower --upper)$suffix"
+    entry_title="$(/usr/bin//usr/bin/keepassxc-cli generate --length 16 --lower --upper)$suffix"
     entry_path=/$__keepass_group/$entry_title
-    result=$(keepassxc-cli add --username "$__program" --url "$url" --generate $__password_policy $__keepass_std_arg $entry_path)
+    result=$(/usr/bin//usr/bin/keepassxc-cli add --username "$__program" --url "$url" --generate $__password_policy $__keepass_std_arg $entry_path)
     fetch_keepass_entry
     echo "$__datetime  keepass entry Created for $url: /$__keepass_group/$entry_title" >> $__logfile
   fi
@@ -222,7 +236,7 @@ clean_up() {
   local i=0
 
   echo "$__datetime Begin clean up" >> $__logfile
-  co=$(keepassxc-cli export -f csv  $__keepass_std_arg | grep rclone | grep -v Recycle | awk -F',' '{ print $5 $1 $2 }' | sed 's/Passwords\///' | sed 's/""/ /g' | sed 's/"//g' | paste -sd ' ')
+  co=$(/usr/bin//usr/bin/keepassxc-cli export -f csv  $__keepass_std_arg | grep rclone | grep -v Recycle | awk -F',' '{ print $5 $1 $2 }' | sed 's/Passwords\///' | sed 's/""/ /g' | sed 's/"//g' | paste -sd ' ')
 
   #echo $co
   content=($(echo $co | tr ' ' ' '))
@@ -235,11 +249,12 @@ clean_up() {
       continue
     fi
     echo "$__datetime   Missing $l_path: purging $local_dir/$l_title and deleting $local_dir/$l_title and checksum" >> $__logfile
-    keepassxc-cli rm  $__keepass_std_arg $l_group/$l_title
-    #keepassxc-cli rm  $__keepass_std_arg $l_title
+    /usr/bin//usr/bin/keepassxc-cli rm  $__keepass_std_arg $l_group/$l_title
+    #/usr/bin//usr/bin/keepassxc-cli rm  $__keepass_std_arg $l_title
     rm -f $local_dir/$l_title
     rm -f $local_dir/$l_title.checksum
   done
+  create_keepass_db
   echo "$__datetime End clean up" >> $__logfile
 }
 

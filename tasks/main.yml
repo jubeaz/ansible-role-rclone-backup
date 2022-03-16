@@ -30,7 +30,7 @@
     dest: /usr/bin/rclone-backup.sh
     owner: root
     group: root
-    mode: 0755
+    mode: 0740
 
 - name: Install retore script
   copy:
@@ -38,7 +38,7 @@
     dest: /usr/bin/rclone-restore.sh
     owner: root
     group: root
-    mode: 0755
+    mode: 0740
 
 - name: Install cron
   template:
