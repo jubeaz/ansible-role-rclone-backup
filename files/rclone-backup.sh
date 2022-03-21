@@ -254,7 +254,7 @@ clean_up() {
     rm -f $local_dir/$l_title
     rm -f $local_dir/$l_title.checksum
   done
-  create_keepass_db
+  delete_empty_dirs
   echo "$__datetime End clean up" >> $__logfile
 }
 
